@@ -1,0 +1,30 @@
+import pandas as pd
+import numpy as np
+
+#importing file
+cp = pd.read_csv('stocks_data.csv')
+
+#Creating new column named avg_eps
+cp['avg_eps']=(cp['eps_2022'] +cp['eps_2021']+cp['eps_2020'])/3
+
+#Creating new column named Ratio & sorting the data in descending order of this ratio
+#Value of this ratio is going to be used for @Ranking_the_stocks
+cp['Ratio']=cp['avg_eps']/cp['p/e']
+cp.sort_values('Ratio',ascending=False,inplace=True)
+
+
+#Sorting the stocks according to given criteria
+cp=cp[cp['p/e']<40]
+cp=cp[cp['p/e']>0]
+cp=cp[cp['CAGR']>=10]
+cp=cp[cp['eps_2022']>0]
+cp=cp[cp['eps_2021']>0]
+cp=cp[cp['eps_2020']>0]
+
+#asigning the length of final dataframe to new variable
+l=len(cp)+1
+
+#giving the values to the column Rank
+cp['Rank']=np.arange(1,l)
+
+cp.to_excel("Quant.xlsx", index=False)
